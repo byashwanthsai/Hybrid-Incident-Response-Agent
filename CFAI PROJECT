@@ -1,0 +1,300 @@
+import heapq
+from itertools import product
+
+# ==========================================================
+# CO1 - AGENT MODEL (PEAS)
+# ==========================================================
+
+class Incident:
+    def __init__(self, location, severity):
+        self.location = location
+        self.severity = severity
+
+
+class IncidentMind:
+    def __init__(self):
+        self.reasoning_trace = []
+
+    def log(self, message):
+        self.reasoning_trace.append(message)
+        print("[TRACE]", message)
+
+
+# ==========================================================
+# CO2 - A* SEARCH (Optimal Route Planning)
+# ==========================================================
+
+class AStarPlanner:
+
+    def __init__(self, graph, heuristic):
+        self.graph = graph
+        self.heuristic = heuristic
+
+    def search(self, start, goal):
+
+        pq = []
+        heapq.heappush(pq, (0, start))
+
+        g_cost = {start: 0}
+        parent = {start: None}
+
+        while pq:
+            _, current = heapq.heappop(pq)
+
+            if current == goal:
+                path = []
+                while current:
+                    path.append(current)
+                    current = parent[current]
+
+                return path[::-1]
+
+            for neighbor, cost in self.graph[current].items():
+
+                new_cost = g_cost[current] + cost
+
+                if neighbor not in g_cost or new_cost < g_cost[neighbor]:
+
+                    g_cost[neighbor] = new_cost
+
+                    priority = new_cost + self.heuristic[neighbor]
+
+                    heapq.heappush(
+                        pq,
+                        (priority, neighbor)
+                    )
+
+                    parent[neighbor] = current
+
+        return None
+
+
+# ==========================================================
+# CO3 - CSP RESOURCE ALLOCATION
+# ==========================================================
+
+class CSPAllocator:
+
+    def allocate(self):
+
+        responders = ["FireTeam", "MedicalTeam"]
+
+        assignments = {
+            "FireTeam": ["Fire"],
+            "MedicalTeam": ["Medical"]
+        }
+
+        for fire_task, medical_task in product(
+                assignments["FireTeam"],
+                assignments["MedicalTeam"]):
+
+            return {
+                "FireTeam": fire_task,
+                "MedicalTeam": medical_task
+            }
+
+        return None
+
+
+# ==========================================================
+# CO4 - MINIMAX DECISION MAKING
+# ==========================================================
+
+class MinimaxPlanner:
+
+    def minimax(self, depth, maximizing):
+
+        if depth == 0:
+            return 0
+
+        if maximizing:
+
+            return max(
+                self.minimax(depth - 1, False) + 5,
+                self.minimax(depth - 1, False) + 3
+            )
+
+        else:
+
+            return min(
+                self.minimax(depth - 1, True) - 4,
+                self.minimax(depth - 1, True) - 2
+            )
+
+
+# ==========================================================
+# CO5 - BAYESIAN NETWORK
+# ==========================================================
+
+class BayesianDiagnosis:
+
+    def diagnose(self, smoke_detected, high_temperature):
+
+        P_fire = 0.60
+        P_electrical = 0.25
+        P_false_alarm = 0.15
+
+        if smoke_detected and high_temperature:
+            likelihood_fire = 0.9
+            likelihood_electrical = 0.5
+            likelihood_false = 0.1
+
+        elif smoke_detected:
+            likelihood_fire = 0.6
+            likelihood_electrical = 0.7
+            likelihood_false = 0.3
+
+        else:
+            likelihood_fire = 0.2
+            likelihood_electrical = 0.2
+            likelihood_false = 0.8
+
+        fire_score = P_fire * likelihood_fire
+        electrical_score = P_electrical * likelihood_electrical
+        false_score = P_false_alarm * likelihood_false
+
+        total = fire_score + electrical_score + false_score
+
+        probabilities = {
+            "Fire": round(fire_score / total, 3),
+            "Electrical Fault": round(
+                electrical_score / total, 3
+            ),
+            "False Alarm": round(
+                false_score / total, 3
+            )
+        }
+
+        return probabilities
+
+
+# ==========================================================
+# CO6 - INTEGRATED HYBRID INCIDENT RESPONSE SYSTEM
+# ==========================================================
+
+def main():
+
+    agent = IncidentMind()
+
+    incident = Incident(
+        location="Building-D",
+        severity="High"
+    )
+
+    agent.log(
+        f"Incident detected at {incident.location}"
+    )
+
+    # -------------------------------
+    # Bayesian Diagnosis
+    # -------------------------------
+
+    bayes = BayesianDiagnosis()
+
+    diagnosis = bayes.diagnose(
+        smoke_detected=True,
+        high_temperature=True
+    )
+
+    agent.log(
+        f"Probable causes: {diagnosis}"
+    )
+
+    # -------------------------------
+    # A* Search Route Planning
+    # -------------------------------
+
+    graph = {
+
+        "ControlRoom": {
+            "Hallway": 2,
+            "Storage": 4
+        },
+
+        "Hallway": {
+            "Building-D": 3
+        },
+
+        "Storage": {
+            "Building-D": 2
+        },
+
+        "Building-D": {}
+    }
+
+    heuristic = {
+        "ControlRoom": 5,
+        "Hallway": 2,
+        "Storage": 1,
+        "Building-D": 0
+    }
+
+    planner = AStarPlanner(
+        graph,
+        heuristic
+    )
+
+    path = planner.search(
+        "ControlRoom",
+        "Building-D"
+    )
+
+    agent.log(
+        f"Optimal response path: {path}"
+    )
+
+    # -------------------------------
+    # CSP Allocation
+    # -------------------------------
+
+    allocator = CSPAllocator()
+
+    allocation = allocator.allocate()
+
+    agent.log(
+        f"Resource Allocation: {allocation}"
+    )
+
+    # -------------------------------
+    # Minimax Planning
+    # -------------------------------
+
+    minimax = MinimaxPlanner()
+
+    utility = minimax.minimax(
+        depth=3,
+        maximizing=True
+    )
+
+    agent.log(
+        f"Worst-case utility score: {utility}"
+    )
+
+    # -------------------------------
+    # Final Decision
+    # -------------------------------
+
+    print("\n===== INCIDENT RESPONSE REPORT =====")
+
+    print("Incident Location:", incident.location)
+
+    print("\nDiagnosis:")
+    for k, v in diagnosis.items():
+        print(f"{k}: {v}")
+
+    print("\nResponse Route:")
+    print(" -> ".join(path))
+
+    print("\nResource Allocation:")
+    for team, task in allocation.items():
+        print(team, "=>", task)
+
+    print("\nMinimax Utility Score:", utility)
+
+    print("\n===== EXPLAINABLE REASONING TRACE =====")
+    for step in agent.reasoning_trace:
+        print("-", step)
+
+
+if __name__ == "__main__":
+    main()
