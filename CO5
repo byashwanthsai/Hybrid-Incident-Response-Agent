@@ -1,0 +1,53 @@
+# =====================================================
+# CO5 - BAYESIAN NETWORK
+# =====================================================
+
+class BayesianDiagnosis:
+
+    def diagnose(self,
+                 smoke,
+                 temperature):
+
+        P_fire = 0.60
+        P_electrical = 0.25
+        P_false = 0.15
+
+        if smoke and temperature:
+
+            fire_likelihood = 0.9
+            electrical_likelihood = 0.5
+            false_likelihood = 0.1
+
+        elif smoke:
+
+            fire_likelihood = 0.6
+            electrical_likelihood = 0.7
+            false_likelihood = 0.3
+
+        else:
+
+            fire_likelihood = 0.2
+            electrical_likelihood = 0.2
+            false_likelihood = 0.8
+
+        fire = P_fire * fire_likelihood
+        electrical = P_electrical * electrical_likelihood
+        false_alarm = P_false * false_likelihood
+
+        total = fire + electrical + false_alarm
+
+        return {
+            "Fire": round(fire / total, 3),
+            "Electrical": round(electrical / total, 3),
+            "False Alarm": round(false_alarm / total, 3)
+        }
+
+
+diagnosis = BayesianDiagnosis()
+
+print(
+    diagnosis.diagnose(
+        smoke=True,
+        temperature=True
+    )
+)
