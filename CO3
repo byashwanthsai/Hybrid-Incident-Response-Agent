@@ -1,0 +1,39 @@
+# =====================================================
+# CO3 - CSP RESOURCE ALLOCATION
+# =====================================================
+
+from itertools import product
+
+teams = ["FireTeam", "MedicalTeam"]
+
+domains = {
+    "FireTeam": ["Fire", "Rescue"],
+    "MedicalTeam": ["Medical", "Rescue"]
+}
+
+
+def valid_assignment(fire_task, medical_task):
+
+    # Constraint:
+    # Two teams cannot perform same task
+
+    return fire_task != medical_task
+
+
+for fire_task, medical_task in product(
+        domains["FireTeam"],
+        domains["MedicalTeam"]):
+
+    if valid_assignment(
+            fire_task,
+            medical_task):
+
+        solution = {
+            "FireTeam": fire_task,
+            "MedicalTeam": medical_task
+        }
+
+        print("Solution Found:")
+        print(solution)
+
+        break
