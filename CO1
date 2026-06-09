@@ -1,0 +1,46 @@
+# =====================================================
+# CO1 - PEAS AGENT MODEL
+# =====================================================
+
+class IncidentResponseAgent:
+    """
+    PEAS Model
+
+    Performance Measure:
+        - Fast response
+        - Correct diagnosis
+        - Efficient resource usage
+
+    Environment:
+        - Smart Building
+
+    Actuators:
+        - Send Alerts
+        - Dispatch Teams
+
+    Sensors:
+        - Smoke Sensor
+        - Temperature Sensor
+    """
+
+    def __init__(self):
+        self.location = None
+        self.severity = None
+
+    def perceive(self, location, severity):
+        self.location = location
+        self.severity = severity
+
+    def act(self):
+        if self.severity == "High":
+            return f"Dispatch emergency teams to {self.location}"
+        else:
+            return f"Monitor situation at {self.location}"
+
+
+# Driver Code
+agent = IncidentResponseAgent()
+
+agent.perceive("Building-D", "High")
+
+print(agent.act())
