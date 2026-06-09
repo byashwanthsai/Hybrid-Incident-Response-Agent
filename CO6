@@ -1,0 +1,45 @@
+# =====================================================
+# CO6 - HYBRID INCIDENT RESPONSE AGENT
+# =====================================================
+
+class ExplainableAgent:
+
+    def __init__(self):
+        self.trace = []
+
+    def log(self, message):
+        self.trace.append(message)
+
+    def show_trace(self):
+
+        print("\nReasoning Trace:")
+
+        for step in self.trace:
+            print("->", step)
+
+
+agent = ExplainableAgent()
+
+agent.log("Incident Detected")
+
+agent.log(
+    "Bayesian Diagnosis: Fire probability highest"
+)
+
+agent.log(
+    "A* Search selected shortest route"
+)
+
+agent.log(
+    "CSP allocated FireTeam and MedicalTeam"
+)
+
+agent.log(
+    "Minimax evaluated worst-case scenario"
+)
+
+agent.log(
+    "Final response generated"
+)
+
+agent.show_trace()
